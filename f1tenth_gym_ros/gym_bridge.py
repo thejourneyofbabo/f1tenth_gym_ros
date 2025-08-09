@@ -37,6 +37,8 @@ from tf2_ros import TransformBroadcaster
 import gym
 import numpy as np
 from transforms3d import euler
+import os
+from ament_index_python.packages import get_package_share_directory
 
 class GymBridge(Node):
     def __init__(self):
@@ -74,8 +76,26 @@ class GymBridge(Node):
             raise ValueError('num_agents should be an int.')
 
         # env backend
+        map_name = self.get_parameter('map_path').value
+        # If map_path contains '/', assume it's already a full path
+        # Otherwise, construct path to maps directory
+        if '/' in map_name:
+            map_path = map_name
+        else:
+            # Try to find maps in source directory first
+            current_file_dir = os.path.dirname(os.path.abspath(__file__))
+            # Navigate from build/f1tenth_gym_ros/f1tenth_gym_ros to src/f1tenth_gym_ros/maps
+            workspace_dir = os.path.dirname(os.path.dirname(os.path.dirname(current_file_dir)))
+            src_maps_path = os.path.join(workspace_dir, 'src', 'f1tenth_gym_ros', 'maps', map_name)
+            if os.path.exists(src_maps_path + '.yaml'):
+                map_path = src_maps_path
+            else:
+                # Fallback to package share directory
+                package_share_dir = get_package_share_directory('f1tenth_gym_ros')
+                map_path = os.path.join(package_share_dir, 'maps', map_name)
+            
         self.env = gym.make('f110_gym:f110-v0',
-                            map=self.get_parameter('map_path').value,
+                            map=map_path,
                             map_ext=self.get_parameter('map_img_ext').value,
                             num_agents=num_agents,
                             lidar_dist=self.get_parameter("scan_distance_to_base_link").value

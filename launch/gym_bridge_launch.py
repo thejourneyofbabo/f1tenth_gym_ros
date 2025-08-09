@@ -37,6 +37,20 @@ def generate_launch_description():
     config_dict = yaml.safe_load(open(config, 'r'))
     has_opp = config_dict['bridge']['ros__parameters']['num_agent'] > 1
     teleop = config_dict['bridge']['ros__parameters']['kb_teleop']
+    
+    # Resolve map path - if it doesn't contain '/', it's just a name and needs full path
+    map_name = config_dict['bridge']['ros__parameters']['map_path']
+    if '/' in map_name:
+        map_yaml_path = map_name + '.yaml'
+    else:
+        # Use relative path from current working directory to source maps
+        # This assumes we're running from the workspace root
+        src_maps_path = os.path.join('src', 'f1tenth_gym_ros', 'maps', map_name + '.yaml')
+        if os.path.exists(src_maps_path):
+            map_yaml_path = os.path.abspath(src_maps_path)
+        else:
+            # Fallback to package share directory
+            map_yaml_path = os.path.join(get_package_share_directory('f1tenth_gym_ros'), 'maps', map_name + '.yaml')
 
     bridge_node = Node(
         package='f1tenth_gym_ros',
@@ -53,7 +67,7 @@ def generate_launch_description():
     map_server_node = Node(
         package='nav2_map_server',
         executable='map_server',
-        parameters=[{'yaml_filename': config_dict['bridge']['ros__parameters']['map_path'] + '.yaml'},
+        parameters=[{'yaml_filename': map_yaml_path},
                     {'topic': 'map'},
                     {'frame_id': 'map'},
                     {'output': 'screen'},
