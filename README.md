@@ -14,7 +14,7 @@ This installation guide will be split into instruction for installing the ROS 2 
 ## Native on Ubuntu 20.04
 
 **Install the following dependencies:**
-- **ROS 2** Follow the instructions [here](https://docs.ros.org/en/foxy/Installation.html) to install ROS 2 Foxy.
+- **ROS 2** Follow the instructions [here](https://docs.ros.org/en/humble/Installation.html) to install ROS 2 Humble.
 - **F1TENTH Gym**
   ```bash
   git clone https://github.com/f1tenth/f1tenth_gym
@@ -28,13 +28,12 @@ This installation guide will be split into instruction for installing the ROS 2 
   cd $HOME/sim_ws/src
   git clone https://github.com/f1tenth/f1tenth_gym_ros
   ```
-- Update correct parameter for path to map file:
-  Go to `sim.yaml` [https://github.com/f1tenth/f1tenth_gym_ros/blob/main/config/sim.yaml](https://github.com/f1tenth/f1tenth_gym_ros/blob/main/config/sim.yaml) in your cloned repo, change the `map_path` parameter to point to the correct location. It should be `'<your_home_dir>/sim_ws/src/f1tenth_gym_ros/maps/levine'`
+- Maps are automatically detected in the source directory, no manual path configuration needed.
 - Install dependencies with rosdep:
   ```bash
-  source /opt/ros/foxy/setup.bash
+  source /opt/ros/humble/setup.bash
   cd ..
-  rosdep install -i --from-path src --rosdistro foxy -y
+  rosdep install -i --from-path src --rosdistro humble -y
   ```
 - Build the workspace: ```colcon build```
 
@@ -85,7 +84,7 @@ docker exec -it f1tenth_gym_ros-sim-1 /bin/bash
 1. `tmux` is included in the contianer, so you can create multiple bash sessions in the same terminal.
 2. To launch the simulation, make sure you source both the ROS2 setup script and the local workspace setup script. Run the following in the bash session from the container:
 ```bash
-$ source /opt/ros/foxy/setup.bash
+$ source /opt/ros/humble/setup.bash
 $ source install/local_setup.bash
 $ ros2 launch f1tenth_gym_ros gym_bridge_launch.py
 ```
@@ -96,7 +95,7 @@ You can then run another node by creating another bash session in `tmux`.
 # Configuring the simulation
 - The configuration file for the simulation is at `f1tenth_gym_ros/config/sim.yaml`.
 - Topic names and namespaces can be configured but is recommended to leave uncahnged.
-- The map can be changed via the `map_path` parameter. You'll have to use the full path to the map file in the container. The map follows the ROS convention. It is assumed that the image file and the `yaml` file for the map are in the same directory with the same name. See the note below about mounting a volume to see where to put your map file.
+- The map can be changed via the `map_path` parameter. Maps are automatically detected from the source directory (`src/f1tenth_gym_ros/maps/`). The map follows the ROS convention. It is assumed that the image file and the `yaml` file for the map are in the same directory with the same name.
 - The `num_agent` parameter can be changed to either 1 or 2 for single or two agent racing.
 - The ego and opponent starting pose can also be changed via parameters, these are in the global map coordinate frame.
 
