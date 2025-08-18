@@ -1,5 +1,26 @@
-# F1TENTH gym environment ROS2 communication bridge
-This is a containerized ROS communication bridge for the F1TENTH gym environment that turns it into a simulation in ROS2.
+# F1TENTH Gym ROS2 Bridge
+
+ROS2 communication bridge for the F1TENTH gym environment - provides realistic racing simulation.
+
+Part of the F1TENTH autonomous racing system - serves as the simulation environment for testing autonomous algorithms.
+
+## Quick Start (Integrated System)
+
+```bash
+# Build (from workspace root)
+colcon build --packages-select f1tenth_gym_ros --symlink-install
+source install/setup.bash
+
+# Launch F1TENTH Gym simulation
+ros2 launch f1tenth_gym_ros gym_bridge_launch.py
+```
+
+**For autonomous racing, launch in this order:**
+1. Localization: `ros2 launch particle_filter_cpp localize_sim_launch.py`
+2. **Simulation**: `ros2 launch f1tenth_gym_ros gym_bridge_launch.py`
+3. Set initial pose in RViz using 2D Pose Estimate
+4. Planning: `ros2 launch lattice_planner_pkg lattice_planner.launch.py sim_mode:=true`
+5. Control: `ros2 launch path_follower_pkg path_follower.launch.py sim_mode:=true`
 
 # Installation
 
