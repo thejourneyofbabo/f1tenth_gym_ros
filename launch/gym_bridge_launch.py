@@ -65,9 +65,20 @@ def generate_launch_description():
         executable='realistic_noise_node',
         name='realistic_noise_node',
         parameters=[config,
-                   {'lidar_noise_scale': 1.0,
+                   # Input/Output topics - match F1Tenth gym topics
+                   {'input_scan_topic': '/scan',  # F1Tenth publishes to /scan
+                    'input_odom_topic': '/ego_racecar/odom',  # F1Tenth publishes to /ego_racecar/odom
+                    'output_scan_topic': '/scan_noisy',
+                    'output_odom_topic': '/ego_racecar/odom_noisy',
+                    # Publishing rates - match original rates
+                    'lidar_publish_rate': 40.0,
+                    'odom_publish_rate': 100.0,
+                    # Noise scaling - realistic values
+                    'lidar_noise_scale': 1.0,
                     'odom_noise_scale': 1.0,
-                    'timing_noise_scale': 1.0}],
+                    'enable_timing_jitter': False,  # Disable timing jitter for consistent rates
+                    # Path to noise config - use relative path
+                    'noise_config_path': os.path.join(get_package_share_directory('sensor_noise_ros'), 'config', 'noise_config.yaml')}],
         output='screen'
     )
     rviz_node = Node(
