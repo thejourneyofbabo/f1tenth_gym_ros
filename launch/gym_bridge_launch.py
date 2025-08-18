@@ -59,26 +59,20 @@ def generate_launch_description():
         parameters=[config]
     )
     
-    # Add realistic noise node for noisy sensor data
-    realistic_noise_node = Node(
-        package='sensor_noise_ros',
-        executable='realistic_noise_node',
-        name='realistic_noise_node',
+    # Add sensor noise node for noisy sensor data
+    sensor_noise_node = Node(
+        package='f1tenth_gym_ros',
+        executable='sensor_noise_node',
+        name='sensor_noise_node',
         parameters=[config,
                    # Input/Output topics - match F1Tenth gym topics
                    {'input_scan_topic': '/scan',  # F1Tenth publishes to /scan
                     'input_odom_topic': '/ego_racecar/odom',  # F1Tenth publishes to /ego_racecar/odom
                     'output_scan_topic': '/scan_noisy',
                     'output_odom_topic': '/ego_racecar/odom_noisy',
-                    # Publishing rates - match original rates
-                    'lidar_publish_rate': 40.0,
-                    'odom_publish_rate': 100.0,
                     # Noise scaling - realistic values
                     'lidar_noise_scale': 1.0,
-                    'odom_noise_scale': 1.0,
-                    'enable_timing_jitter': False,  # Disable timing jitter for consistent rates
-                    # Path to noise config - use relative path
-                    'noise_config_path': os.path.join(get_package_share_directory('sensor_noise_ros'), 'config', 'noise_config.yaml')}],
+                    'odom_noise_scale': 1.0}],
         output='screen'
     )
     rviz_node = Node(
@@ -123,7 +117,7 @@ def generate_launch_description():
     # finalize
     ld.add_action(rviz_node)
     ld.add_action(bridge_node)
-    ld.add_action(realistic_noise_node)  # Add noise node to default launch
+    ld.add_action(sensor_noise_node)  # Add noise node to default launch
     ld.add_action(nav_lifecycle_node)
     ld.add_action(map_server_node)
     ld.add_action(ego_robot_publisher)
