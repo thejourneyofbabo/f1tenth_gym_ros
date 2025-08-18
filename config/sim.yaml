@@ -43,7 +43,7 @@ bridge:
 
     # map parameters
     map_path: 'Spielberg_map'
-    map_path: 'slam_map'
+    # map_path: 'slam_map'
     # map_path: 'Spielberg_map_obs'
     map_img_ext: '.png'
 
