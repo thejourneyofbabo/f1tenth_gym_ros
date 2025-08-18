@@ -67,6 +67,8 @@ class GymBridge(Node):
         self.declare_parameter('sy1')
         self.declare_parameter('stheta1')
         self.declare_parameter('kb_teleop')
+        self.declare_parameter('lidar_publish_rate', 40.0)
+        self.declare_parameter('odom_publish_rate', 100.0)
 
         # check num_agents
         num_agents = self.get_parameter('num_agent').value
@@ -148,8 +150,13 @@ class GymBridge(Node):
 
         # sim physical step timer
         self.drive_timer = self.create_timer(0.01, self.drive_timer_callback)
-        # topic publishing timer
-        self.timer = self.create_timer(0.004, self.timer_callback)
+        
+        # sensor publishing timers with configurable rates
+        lidar_rate = self.get_parameter('lidar_publish_rate').value
+        odom_rate = self.get_parameter('odom_publish_rate').value
+        
+        self.lidar_timer = self.create_timer(1.0 / lidar_rate, self.lidar_timer_callback)
+        self.odom_timer = self.create_timer(1.0 / odom_rate, self.odom_timer_callback)
 
         # transform broadcaster
         self.br = TransformBroadcaster(self)
@@ -253,7 +260,7 @@ class GymBridge(Node):
             self.obs, _, self.done, _ = self.env.step(np.array([[self.ego_steer, self.ego_requested_speed], [self.opp_steer, self.opp_requested_speed]]))
         self._update_sim_state()
 
-    def timer_callback(self):
+    def lidar_timer_callback(self):
         ts = self.get_clock().now().to_msg()
 
         # pub scans
@@ -280,7 +287,10 @@ class GymBridge(Node):
             opp_scan.ranges = self.opp_scan
             self.opp_scan_pub.publish(opp_scan)
 
-        # pub tf
+    def odom_timer_callback(self):
+        ts = self.get_clock().now().to_msg()
+        
+        # pub tf and odom
         self._publish_odom(ts)
         self._publish_transforms(ts)
         self._publish_laser_transforms(ts)

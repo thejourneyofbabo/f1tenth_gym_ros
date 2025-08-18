@@ -42,7 +42,7 @@ bridge:
     scan_beams: 1080
 
     # map parameters
-    map_path: 'levine'
+    map_path: 'Spielberg_map'
     map_img_ext: '.png'
 
     # opponent parameters
@@ -60,3 +60,7 @@ bridge:
 
     # teleop
     kb_teleop: True
+
+    # sensor publishing rates (Hz)
+    lidar_publish_rate: 40.0
+    odom_publish_rate: 100.0

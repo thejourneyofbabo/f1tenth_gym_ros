@@ -58,6 +58,18 @@ def generate_launch_description():
         name='bridge',
         parameters=[config]
     )
+    
+    # Add realistic noise node for noisy sensor data
+    realistic_noise_node = Node(
+        package='sensor_noise_ros',
+        executable='realistic_noise_node',
+        name='realistic_noise_node',
+        parameters=[config,
+                   {'lidar_noise_scale': 1.0,
+                    'odom_noise_scale': 1.0,
+                    'timing_noise_scale': 1.0}],
+        output='screen'
+    )
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -100,6 +112,7 @@ def generate_launch_description():
     # finalize
     ld.add_action(rviz_node)
     ld.add_action(bridge_node)
+    ld.add_action(realistic_noise_node)  # Add noise node to default launch
     ld.add_action(nav_lifecycle_node)
     ld.add_action(map_server_node)
     ld.add_action(ego_robot_publisher)
