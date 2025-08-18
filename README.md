@@ -120,6 +120,15 @@ You can then run another node by creating another bash session in `tmux`.
 - The `num_agent` parameter can be changed to either 1 or 2 for single or two agent racing.
 - The ego and opponent starting pose can also be changed via parameters, these are in the global map coordinate frame.
 
+## Sensor Noise Model
+
+The simulation includes a realistic sensor noise model that adds Gaussian noise to both laser scan and odometry data:
+
+- **Laser Scan Noise**: Adds range-dependent Gaussian noise (2cm + 1% of range)
+- **Odometry Noise**: Adds noise to position (1cm std), orientation (~0.6° std), and velocity (5cm/s std)
+- **Noisy Topics**: `/scan_noisy` and `/ego_racecar/odom_noisy`
+- **Noise Scaling**: Configurable via `lidar_noise_scale` and `odom_noise_scale` parameters
+
 The entire directory of the repo is mounted to a workspace `/sim_ws/src` as a package. All changes made in the repo on the host system will also reflect in the container. After changing the configuration, run `colcon build` again in the container workspace to make sure the changes are reflected.
 
 # Topics published by the simulation
@@ -129,6 +138,10 @@ In **single** agent:
 `/scan`: The ego agent's laser scan
 
 `/ego_racecar/odom`: The ego agent's odometry
+
+`/scan_noisy`: Noisy laser scan data with realistic sensor noise (added by sensor noise model)
+
+`/ego_racecar/odom_noisy`: Noisy odometry data with realistic sensor noise (added by sensor noise model)
 
 `/map`: The map of the environment
 
