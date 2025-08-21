@@ -42,10 +42,13 @@ bridge:
     scan_beams: 1080
 
     # map parameters
-    map_path: 'Spielberg_map'
+    # map_path: 'Spielberg_map'
     # map_path: 'slam_map'
+    # map_path: 'map_1753950572'
+    # map_path: 'slam_map_obs'
     # map_path: 'Spielberg_map_obs'
-    map_img_ext: '.png'
+    map_path: 'map_1755669035' # new map
+    map_img_ext: '.pgm'
 
     # opponent parameters
     num_agent: 1
