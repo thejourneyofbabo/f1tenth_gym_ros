@@ -88,9 +88,10 @@
 
   <link name="${car_name}/front_left_hinge"/>
 
-  <joint name="front_left_hinge_to_wheel" type="continuous">
+  <joint name="front_left_hinge_to_wheel" type="fixed">
     <parent link="${car_name}/front_left_hinge"/>
     <child link="${car_name}/front_left_wheel"/>
+    <origin xyz="0 0 0"/>
   </joint>
 
   <link name="${car_name}/front_left_wheel">
@@ -111,9 +112,10 @@
 
   <link name="${car_name}/front_right_hinge"/>
 
-  <joint name="front_right_hinge_to_wheel" type="continuous">
+  <joint name="front_right_hinge_to_wheel" type="fixed">
     <parent link="${car_name}/front_right_hinge"/>
     <child link="${car_name}/front_right_wheel"/>
+    <origin xyz="0 0 0"/>
   </joint>
 
   <link name="${car_name}/front_right_wheel">
